@@ -88,4 +88,9 @@ public function invoices()
 {
     return $this->hasMany(Appointment::class)->where('billed', 1); // Nur fakturierte Termine
 }
+
+public function clients()
+{
+    return $this->hasMany(Client::class);
+}
 }

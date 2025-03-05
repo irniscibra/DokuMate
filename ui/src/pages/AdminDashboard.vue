@@ -23,7 +23,7 @@
             <q-icon name="business" />
           </q-item-section>
           <q-item-section>Firmeneinstellungen</q-item-section>
-        </q-item>œ
+        </q-item>
 
         <q-item clickable v-ripple @click="selectedTab = 'invoices'">
           <q-item-section avatar>

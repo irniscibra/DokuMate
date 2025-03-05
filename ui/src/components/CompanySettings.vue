@@ -6,6 +6,7 @@
     <q-tabs v-model="selectedTab" class="text-primary">
       <q-tab name="details" label="Firmeninformationen" />
       <q-tab name="edit" label="Bearbeiten" />
+      <q-tab name="invoices" label="Rechnungen"/>
     </q-tabs>
 
     <q-tab-panels v-model="selectedTab" animated>
@@ -47,7 +48,29 @@
           </q-card-section>
         </q-card>
       </q-tab-panel>
+
+      <q-tab-panel name="invoices">
+        <q-card>
+          <q-card-section>
+            <div class="row justify-between">
+              <h5>📜 Rechnungen</h5>
+              <q-btn dense flat icon="add" color="primary" label="Neue Rechnung" @click="openInvoiceDialog" />
+            </div>
+          </q-card-section>
+
+          <q-table :rows="invoices"  row-key="id" dense bordered>
+            <template v-slot:body-cell(actions)="props">
+              <q-td>
+                <q-btn color="primary" icon="visibility" label="Ansehen" @click="viewInvoice(props.row)" />
+              </q-td>
+            </template>
+          </q-table>
+        </q-card>
+      </q-tab-panel>
     </q-tab-panels>
+
+    <!-- Rechnungserstellung als Dialog -->
+    <InvoiceDialog :visible="invoiceDialogVisible" @invoiceCreated="onInvoiceCreated" @close="invoiceDialogVisible = false" />
   </q-page>
 </template>
 
@@ -55,9 +78,12 @@
 import { ref, onMounted } from "vue";
 import { api } from "boot/axios";
 import { useQuasar } from "quasar";
+import InvoiceDialog from "components/InvoiceDialog.vue";
 
 const $q = useQuasar();
 const selectedTab = ref("details");
+const invoices = ref([]);
+const invoiceDialogVisible = ref(false);
 
 const settings = ref({
   company_name: "",
@@ -106,8 +132,29 @@ async function saveSettings() {
 function switchToEdit() {
   selectedTab.value = "edit";
 }
+// Rechnungen abrufen
+async function fetchInvoices() {
+  try {
+    const response = await api.get("/invoices");
+    invoices.value = response.data;
+  } catch (error) {
+    console.error("Fehler beim Laden der Rechnungen:", error);
+  }
+}
 
-onMounted(fetchSettings);
+// Dialog öffnen
+function openInvoiceDialog() {
+  invoiceDialogVisible.value = true;
+}
+
+// Neue Rechnung hinzufügen
+function onInvoiceCreated(newInvoice) {
+  invoices.value.push(newInvoice);
+  invoiceDialogVisible.value = false;
+}
+
+
+onMounted(fetchSettings,fetchInvoices);
 </script>
 
 <style scoped>
