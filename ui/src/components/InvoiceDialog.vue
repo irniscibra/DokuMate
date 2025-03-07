@@ -1,6 +1,6 @@
 <template>
     <q-dialog v-model="dialogVisible" persistent>
-      <q-card class="invoice-dialog">
+      <q-card class="invoice-dialog" style="width: 600px;">
         <q-card-section>
           <div class="row justify-between">
             <h5>📝 Rechnung erstellen</h5>

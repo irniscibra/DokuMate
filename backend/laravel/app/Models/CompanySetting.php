@@ -16,6 +16,8 @@ class CompanySetting extends Model
         'tax_id',
         'ceo_name',
         'bank_details',
+        'bic',     
+        'bank_name',    
         'invoice_footer'
     ];
 }

@@ -1,12 +1,11 @@
 <template>
   <q-page padding>
-    <h4>🏢 Rechnungeinstellungen</h4>
 
     <!-- TABS -->
     <q-tabs v-model="selectedTab" class="text-primary">
       <q-tab name="details" label="Firmeninformationen" />
       <q-tab name="edit" label="Bearbeiten" />
-      <q-tab name="invoices" label="Rechnungen"/>
+      <q-tab name="invoices" label="Rechnungen" />
     </q-tabs>
 
     <q-tab-panels v-model="selectedTab" animated>
@@ -41,6 +40,8 @@
               <q-input v-model="settings.tax_id" label="Steuer-ID" required />
               <q-input v-model="settings.ceo_name" label="Geschäftsführer" required />
               <q-input v-model="settings.bank_details" label="Bankverbindung" />
+              <q-input v-model="settings.bic" label="BIC" />
+              <q-input v-model="settings.bank_name" label="Bankname" />
               <q-input v-model="settings.invoice_footer" label="Rechnungstext (Fußzeile)" type="textarea" />
 
               <q-btn type="submit" label="Speichern" color="primary" />
@@ -50,40 +51,66 @@
       </q-tab-panel>
 
       <q-tab-panel name="invoices">
-        <q-card>
-          <q-card-section>
-            <div class="row justify-between">
-              <h5>📜 Rechnungen</h5>
-              <q-btn dense flat icon="add" color="primary" label="Neue Rechnung" @click="openInvoiceDialog" />
-            </div>
-          </q-card-section>
+        <q-card-section>
+          <h5 class="text-center q-ma-none q-pb-sm text-primary">Deine Rechungen</h5>
+        </q-card-section>
 
-          <q-table :rows="invoices"  row-key="id" dense bordered>
-            <template v-slot:body-cell(actions)="props">
-              <q-td>
-                <q-btn color="primary" icon="visibility" label="Ansehen" @click="viewInvoice(props.row)" />
-              </q-td>
-            </template>
-          </q-table>
-        </q-card>
+        <q-card-section class="invoice-header">
+          <q-btn dense flat icon="arrow_back_ios" @click="prevMonth" />
+          <div class="invoice-month">
+            <span>{{ formattedMonth }}</span>
+          </div>
+          <q-btn dense flat icon="arrow_forward_ios" @click="nextMonth" />
+        </q-card-section>
+
+        <q-card-section class="invoice-list">
+          <div v-for="invoice in filteredInvoices" :key="invoice.id" class="invoice-card"
+            :class="invoice.status === 'bezahlt' ? 'paid' : 'unpaid'">
+            <div class="invoice-content">
+              <div class="invoice-title">{{ invoice.client ? invoice.client.name : "Allgemeine Rechnung" }}</div>
+              <div class="invoice-amount">{{ Number(invoice.total_amount).toFixed(2) }} €</div>
+            </div>
+            <div class="invoice-footer">
+              <div class="invoice-date">{{ formatDate(invoice.invoice_date) }}</div>
+              <q-btn flat round icon="visibility" @click="viewInvoice(invoice.id)" />
+            </div>
+          </div>
+          <template v-if="filteredInvoices.length === 0">
+            <div class="empty-state">
+              <q-icon name="receipt_long" size="48px" color="grey-7" />
+              <p>Für diesen Monat sind noch keine Rechnungen vorhanden.</p>
+            </div>
+          </template>
+
+        </q-card-section>
+        <q-card-actions align="center">
+          <q-btn rounded dense icon="add" size="30px" color="primary" class="add-invoice-btn"
+            @click="openInvoiceDialog" />
+        </q-card-actions>
+
       </q-tab-panel>
     </q-tab-panels>
 
     <!-- Rechnungserstellung als Dialog -->
-    <InvoiceDialog :visible="invoiceDialogVisible" @invoiceCreated="onInvoiceCreated" @close="invoiceDialogVisible = false" />
+    <InvoiceDialog :visible="invoiceDialogVisible" @invoiceCreated="onInvoiceCreated"
+      @close="invoiceDialogVisible = false" />
   </q-page>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { api } from "boot/axios";
 import { useQuasar } from "quasar";
 import InvoiceDialog from "components/InvoiceDialog.vue";
+import{useRouter} from "vue-router";
 
+const router = useRouter();
 const $q = useQuasar();
 const selectedTab = ref("details");
 const invoices = ref([]);
 const invoiceDialogVisible = ref(false);
+const selectedMonth = ref(new Date().getMonth() + 1);
+const selectedYear = ref(new Date().getFullYear());
 
 const settings = ref({
   company_name: "",
@@ -93,6 +120,8 @@ const settings = ref({
   tax_id: "",
   ceo_name: "",
   bank_details: "",
+  bic:"",
+  bank_name:"",
   invoice_footer: ""
 });
 const settingsId = ref(null);
@@ -142,6 +171,49 @@ async function fetchInvoices() {
   }
 }
 
+// Rechnungen nach Monat filtern
+const filteredInvoices = computed(() => {
+  return invoices.value.filter(inv => {
+    const invDate = new Date(inv.invoice_date);
+    return invDate.getMonth() + 1 === selectedMonth.value && invDate.getFullYear() === selectedYear.value;
+  });
+});
+
+// Monat wechseln
+function prevMonth() {
+  if (selectedMonth.value === 1) {
+    selectedMonth.value = 12;
+    selectedYear.value--;
+  } else {
+    selectedMonth.value--;
+  }
+}
+
+function nextMonth() {
+  if (selectedMonth.value === 12) {
+    selectedMonth.value = 1;
+    selectedYear.value++;
+  } else {
+    selectedMonth.value++;
+  }
+}
+
+// Monat formatieren
+const formattedMonth = computed(() => {
+  return new Date(selectedYear.value, selectedMonth.value - 1).toLocaleString('de-DE', { month: 'long', year: 'numeric' });
+});
+
+// Datum formatieren
+function formatDate(dateStr) {
+  return new Date(dateStr).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
+// Rechnung ansehen
+function viewInvoice(id) {
+  router.push(`/invoice/${id}`);
+  console.log("Rechnung ansehen:", id);
+}
+
 // Dialog öffnen
 function openInvoiceDialog() {
   invoiceDialogVisible.value = true;
@@ -154,7 +226,8 @@ function onInvoiceCreated(newInvoice) {
 }
 
 
-onMounted(fetchSettings,fetchInvoices);
+onMounted(fetchSettings);
+onMounted(fetchInvoices);
 </script>
 
 <style scoped>
@@ -174,5 +247,86 @@ onMounted(fetchSettings,fetchInvoices);
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+
+.invoice-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.invoice-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: 0.2s ease;
+}
+
+.paid {
+  background: #00bfa5;
+  color: white;
+}
+
+.unpaid {
+  background: #fa8072;
+  color: white;
+}
+
+.invoice-content {
+  flex: 1;
+}
+
+.invoice-title {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.invoice-amount {
+  font-size: 14px;
+}
+
+.invoice-footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.invoice-date {
+  font-size: 12px;
+}
+
+.invoice-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background: var(--q-primary);
+  color: white;
+  border-radius: 8px;
+}
+
+.invoice-month {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 20px;
+  color: grey;
+}
+
+.empty-state q-icon {
+  margin-bottom: 8px;
+}
+
+.empty-state p {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 12px;
 }
 </style>

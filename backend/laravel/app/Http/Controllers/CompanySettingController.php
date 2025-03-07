@@ -23,6 +23,8 @@ class CompanySettingController extends Controller
             'tax_id' => 'required|string',
             'ceo_name' => 'required|string',
             'bank_details' => 'nullable|string',
+            'bic' => 'nullable|string', 
+            'bank_name' => 'nullable|string', 
             'invoice_footer' => 'nullable|string',
         ]);
 
@@ -47,6 +49,8 @@ class CompanySettingController extends Controller
             'tax_id' => 'required|string',
             'ceo_name' => 'required|string',
             'bank_details' => 'nullable|string',
+            'bic' => 'nullable|string', 
+            'bank_name' => 'nullable|string', 
             'invoice_footer' => 'nullable|string',
         ]);
 

@@ -42,6 +42,11 @@ const routes = [
     name: 'EditAppointment',
     component: () => import('src/pages/EditAppointment.vue'),
     props: true
+  },
+  {
+    path: "/invoice/:id",
+    component: () => import("components/InvoiceDetail.vue"),
+    props: true
   }
 
 ];

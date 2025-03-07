@@ -37,6 +37,8 @@ Route::middleware('auth:sanctum')->group(function () {
     //Invoices routen
     Route::post('/invoices', [InvoiceController::class, 'store']); // Rechnung speichern
     Route::get('/invoices', [InvoiceController::class, 'index']); // Rechnungen abrufen
+    Route::get('/invoices/{id}', [InvoiceController::class, 'show']); // Einzelne Rechnung abrufen 
+
     Route::post('/invoice-items', [InvoiceItemController::class, 'store']); // Leistung hinzufügen
     Route::get('/invoice-items/{invoice_id}', [InvoiceItemController::class, 'index']); // Leistungen einer Rechnung abrufen
     Route::delete('/invoice-items/{id}', [InvoiceItemController::class, 'destroy']); // Leistung löschen
@@ -45,14 +47,16 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 //admin middleware und admin routes
-
-
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::get('/users', [AdminController::class, 'getUsers']);
     Route::get('/users-with-reports', [AdminController::class, 'getUsersWithReports']);
     Route::get('/company-settings', [CompanySettingController::class, 'get']);
     Route::post('/company-settings', [CompanySettingController::class, 'store']); 
     Route::put('/company-settings/{id}', [CompanySettingController::class, 'update']); 
+
+    //rechnung pdf generierung
+    Route::get('/invoices/{id}/pdf', [InvoiceController::class, 'generatePDF']);
+
 
 
     Route::get('/clients', [ClientController::class, 'index']); // Alle Clients abrufen

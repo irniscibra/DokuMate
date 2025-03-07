@@ -4,7 +4,7 @@
       <q-toolbar>
         <q-btn flat dense round icon="menu" @click="drawer = !drawer" />
         <q-toolbar-title>Admin-Dashboard</q-toolbar-title>
-        <q-btn icon="logout" label="Adminpanel verlassen" @click="router.push('/landing')"/>
+        <q-btn flat icon="logout" label="Adminpanel verlassen" @click="router.push('/landing')"/>
       </q-toolbar>
     </q-header>
 
@@ -22,14 +22,22 @@
           <q-item-section avatar>
             <q-icon name="business" />
           </q-item-section>
-          <q-item-section>Firmeneinstellungen</q-item-section>
+          <q-item-section>Rechnugsverwaltung</q-item-section>
         </q-item>
 
-        <q-item clickable v-ripple @click="selectedTab = 'invoices'">
+        <!-- <q-item clickable v-ripple @click="selectedTab = 'invoices'">
           <q-item-section avatar>
             <q-icon name="receipt_long" />
           </q-item-section>
           <q-item-section>Rechnungen</q-item-section>
+        </q-item> -->
+
+
+        <q-item clickable v-ripple @click="selectedTab = 'invoices'">
+          <q-item-section avatar>
+            <q-icon name="person" />
+          </q-item-section>
+          <q-item-section>Kunden</q-item-section>
         </q-item>
       </q-list>
     </q-drawer>
