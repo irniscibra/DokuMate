@@ -1,5 +1,9 @@
 <template>
     <q-dialog v-model="dialogVisible" persistent>
+      <!-- <pre class="text-white">
+        {{ authStore.user }}
+
+      </pre> -->
       <q-card class="invoice-dialog" style="width: 600px;">
         <q-card-section>
           <div class="row justify-between">
@@ -103,7 +107,8 @@
   async function saveInvoice() {
     try {
       const response = await api.post("/invoices", {
-        company_id: authStore.user.company_id,
+        // company_id: authStore.user.company_id,
+        company_id: authStore.user.roles[0].company_id,
         user_id: authStore.user.id,
         client_id: newInvoice.value.client_id,
         invoice_date: newInvoice.value.invoice_date,
@@ -111,6 +116,9 @@
         status:"offen",
         items: newInvoice.value.items
       });
+
+      console.log("Das ist response",response);
+      
   
       emit("invoiceCreated", response.data);
       $q.notify({ type: "positive", message: "Rechnung erfolgreich erstellt!" });

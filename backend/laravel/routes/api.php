@@ -10,6 +10,8 @@ use App\Http\Controllers\CompanySettingController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\InvoiceItemController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\TaxReportController;
+use App\Http\Controllers\ExpenseController;
 
 Route::middleware(['auth:sanctum', 'premium'])->get('/premium-feature', function () {
     return response()->json(['message' => 'Willkommen im Premium-Bereich!']);
@@ -38,6 +40,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/invoices', [InvoiceController::class, 'store']); // Rechnung speichern
     Route::get('/invoices', [InvoiceController::class, 'index']); // Rechnungen abrufen
     Route::get('/invoices/{id}', [InvoiceController::class, 'show']); // Einzelne Rechnung abrufen 
+    Route::put('/invoices/{id}', [InvoiceController::class, 'update']); // Einzelne Rechnung abrufen 
+
 
     Route::post('/invoice-items', [InvoiceItemController::class, 'store']); // Leistung hinzufügen
     Route::get('/invoice-items/{invoice_id}', [InvoiceItemController::class, 'index']); // Leistungen einer Rechnung abrufen
@@ -54,10 +58,18 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::post('/company-settings', [CompanySettingController::class, 'store']); 
     Route::put('/company-settings/{id}', [CompanySettingController::class, 'update']); 
 
+    //ausgaben
+    Route::get('/expenses', [ExpenseController::class, 'index']);
+    Route::post('/expenses', [ExpenseController::class, 'store']);
+    Route::get('/expenses/{id}', [ExpenseController::class, 'show']);
+    Route::put('/expenses/{id}', [ExpenseController::class, 'update']);
+    Route::delete('/expenses/{id}', [ExpenseController::class, 'destroy']);
+
     //rechnung pdf generierung
     Route::get('/invoices/{id}/pdf', [InvoiceController::class, 'generatePDF']);
 
-
+    //steuerreport
+    Route::get('/reports/tax', [TaxReportController::class, 'getTaxReport']);
 
     Route::get('/clients', [ClientController::class, 'index']); // Alle Clients abrufen
     Route::post('/clients', [ClientController::class, 'store']); // Neuen Client speichern

@@ -9,7 +9,11 @@ return new class extends Migration {
         Schema::create('appointments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('client_id')->nullable()->constrained()->onDelete('set null');
+            // $table->foreignId('client_id')->nullable()->constrained()->onDelete('set null');
+            $table->unsignedBigInteger('client_id')->nullable();
+            $table->foreign('client_id')->references('id')->on('clients')->onDelete('set null');
+
+
             $table->string('title');
             $table->text('description')->nullable();
             $table->date('date');

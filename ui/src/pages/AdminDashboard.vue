@@ -25,15 +25,15 @@
           <q-item-section>Rechnugsverwaltung</q-item-section>
         </q-item>
 
-        <!-- <q-item clickable v-ripple @click="selectedTab = 'invoices'">
-          <q-item-section avatar>
-            <q-icon name="receipt_long" />
-          </q-item-section>
-          <q-item-section>Rechnungen</q-item-section>
-        </q-item> -->
+        <q-item clickable v-ripple @click="selectedTab = 'expenses'">
+  <q-item-section avatar>
+    <q-icon name="payments" />
+  </q-item-section>
+  <q-item-section>Ausgaben</q-item-section>
+</q-item>
 
 
-        <q-item clickable v-ripple @click="selectedTab = 'invoices'">
+        <q-item clickable v-ripple @click="selectedTab = 'clients'">
           <q-item-section avatar>
             <q-icon name="person" />
           </q-item-section>
@@ -54,7 +54,8 @@
 import { ref, computed } from "vue";
 import MitarbeiterVerwaltung from "components/MitarbeiterVerwaltung.vue";
 import CompanySettings from "components/CompanySettings.vue";
-import RechnungenVerwaltung from "components/RechnungenVerwaltung.vue";
+import ClientsManagment from "components/ClientsManagment.vue";
+import ExpensesList from "components/ExpensesList.vue";
 import {useRouter} from "vue-router";
 
 const router = useRouter();
@@ -66,8 +67,10 @@ const selectedComponent = computed(() => {
   switch (selectedTab.value) {
     case "company":
       return CompanySettings;
-    case "invoices":
-      return RechnungenVerwaltung;
+    case "clients":
+      return ClientsManagment;
+      case "expenses":
+      return ExpensesList;
     default:
       return MitarbeiterVerwaltung;
   }

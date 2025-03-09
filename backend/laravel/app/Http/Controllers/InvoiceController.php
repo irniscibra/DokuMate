@@ -84,6 +84,18 @@ class InvoiceController extends Controller
     }
 }
 
+public function update(Request $request, $id)
+{
+    $invoice = Invoice::find($id);
+    if (!$invoice) {
+        return response()->json(['error' => 'Rechnung nicht gefunden'], 404);
+    }
+
+    $invoice->update(['status' => $request->status]);
+
+    return response()->json($invoice);
+}
+
 public function delete($id)
 {
     $invoice = Invoice::find($id);

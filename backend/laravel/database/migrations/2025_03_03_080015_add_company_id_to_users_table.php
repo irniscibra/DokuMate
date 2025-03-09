@@ -10,7 +10,10 @@ return new class extends Migration {
         Schema::table('users', function (Blueprint $table) {
             if (Schema::hasTable('roles') && Schema::hasTable('companies')) {
                 $table->foreignId('company_id')->nullable()->constrained('companies')->onDelete('cascade');
-                $table->foreignId('role_id')->nullable()->constrained('roles')->onDelete('cascade');
+                // $table->foreignId('role_id')->nullable()->constrained('roles')->onDelete('cascade');
+                if (Schema::hasColumn('users', 'role_id')) {
+                    $table->dropForeign(['role_id']);
+                }
             }
         });
     }
