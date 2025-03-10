@@ -32,7 +32,7 @@
             <q-item-label caption>Gesamtbetrag offen</q-item-label>
           </q-item-section>
   
-          <q-item-section side>
+          <q-item-section side class="btn-group">
             <q-btn flat icon="visibility" color="primary" @click="viewClient(client.id)" />
             <q-btn icon="edit" color="primary" flat round @click="editClient(client)" />
             <q-btn icon="delete" color="red" flat round @click="deleteClient(client.id)" />
@@ -76,7 +76,7 @@
   
   // Kunden-Detailseite aufrufen
   function viewClient(id) {
-    router.push(`/clients/${id}`);
+    router.push(`/admin-dashboard/clients/${id}`);
   }
 
 // Neuen Kunden-Dialog öffnen
@@ -124,4 +124,12 @@ async function deleteClient(id) {
   
   onMounted(fetchClients);
   </script>
+
+  <style scoped>
+.btn-group {
+  display: flex;
+  flex-direction: row;
+  gap: 2px;
+}
+</style>
   

@@ -4,7 +4,7 @@
         <q-card-section>
           <div class="header">
             <h5>📄 Ausgabendetails</h5>
-            <q-btn icon="arrow_back" color="grey" flat @click="router.push('/expenses')" />
+            <q-btn icon="arrow_back" color="grey" flat @click="router.push('/admin-dashboard/expenses')" />
           </div>
         </q-card-section>
   

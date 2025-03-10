@@ -322,7 +322,7 @@ function formatDate(dateStr) {
 
 
 function viewInvoice(id) {
-  router.push(`/invoice/${id}`);
+  router.push(`/admin-dashboard/invoice/${id}`);
   console.log("Rechnung ansehen:", id);
 }
 

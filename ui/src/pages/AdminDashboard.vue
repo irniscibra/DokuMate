@@ -53,6 +53,7 @@
           </q-item-section>
           <q-item-section>Datev Export</q-item-section>
         </q-item>
+
       </q-list>
     </q-drawer>
 
@@ -67,9 +68,9 @@
 <script setup>
 import { ref, computed } from "vue";
 import MitarbeiterVerwaltung from "components/MitarbeiterVerwaltung.vue";
-import CompanySettings from "components/CompanySettings.vue";
+import CompanySettings from "src/pages/CompanySettings.vue";
 import ClientsManagment from "src/pages/ClientsManagment.vue";
-import ExpensesList from "components/ExpensesList.vue";
+import ExpensesList from "src/pages/ExpensesList.vue";
 import TaxReport from "pages/TaxReport.vue";
 import DatevExport from "./DatevExport.vue";
 import { useRouter } from "vue-router";

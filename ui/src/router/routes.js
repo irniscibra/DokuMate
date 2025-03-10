@@ -1,23 +1,3 @@
-// const routes = [
-//   {
-//     path: '/',
-//     component: () => import('layouts/MainLayout.vue'),
-//     children: [
-//       { path: '', component: () => import('pages/IndexPage.vue') }
-//     ]
-//   },
-
-//   // Always leave this as last one,
-//   // but you can also remove it
-//   {
-//     path: '/:catchAll(.*)*',
-//     component: () => import('pages/ErrorNotFound.vue')
-//   }
-// ]
-
-// export default routes
-
-
 import { createRouter, createWebHistory } from 'vue-router';
 import LoginPage from 'pages/LoginPage.vue';
 import RegisterPage from 'pages/RegisterPage.vue';
@@ -28,6 +8,8 @@ import ClientsManagment from 'pages/ClientsManagment.vue';
 import ClientDetail from 'src/pages/ClientDetail.vue';
 import TaxReport from 'src/pages/TaxReport.vue';
 import DatevExport from 'src/pages/DatevExport.vue';
+import CompanySettings from 'src/pages/CompanySettings.vue';
+import ExpensesList from 'src/pages/ExpensesList.vue';
 
 const routes = [
   { path: '/', component: LoginPage, meta: { guestOnly: true } },
@@ -35,14 +17,24 @@ const routes = [
   { path: '/landing', component: LandingPage, meta: { requiresAuth: true } },
   { path: '/profile', component: ProfilePage, meta: { requiresAuth: true } },
   { path: '/appointments', component: AppointmentsPage, meta: { requiresAuth: true } },
-  { path: '/admin-dashboard', component: () => import('src/pages/AdminDashboard2.vue'), meta: { requiresAuth: true },
-children: [
-  { path: "clients", component: ClientsManagment },
-  { path: "clients/:id", component: ClientDetail, props: true },
-  { path: "tax-report", component: TaxReport },
-  { path: "datev-export", component: DatevExport }
-]
-},
+  {
+    path: '/admin-dashboard', component: () => import('src/pages/AdminDashboard2.vue'), meta: { requiresAuth: true },
+    children: [
+      { path: "clients", component: ClientsManagment },
+      { path: "clients/:id", component: ClientDetail, props: true },
+      { path: "tax-report", component: TaxReport },
+      { path: "datev-export", component: DatevExport },
+      { path: "company-settings", component: CompanySettings },
+      { path: "invoice/:id", component: () => import("components/InvoiceDetail.vue"), props: true }, 
+      {path:"expenses",component:ExpensesList},
+      {
+        path: "/expense/:id",
+        component: () => import("pages/ExpenseDetails.vue"),
+        name: "ExpenseDetails"
+      },
+
+    ]
+  },
   {
     path: '/appointments/new',
     component: () => import('pages/NewAppointmentPage.vue'),
@@ -55,34 +47,10 @@ children: [
     props: true
   },
   {
-    path: "/invoice/:id",
-    component: () => import("components/InvoiceDetail.vue"),
-    props: true
+    path:"/tasks",
+    name:"Tasks",
+    component:()=>import('src/components/TaskCard.vue')
   },
-  // 👥 Kundenverwaltung
-  // { path: "/clients", component: ClientsManagment, meta: { requiresAuth: true } },
-  // { path: "/clients/:id", component: ClientDetail, props: true, meta: { requiresAuth: true } },
-  // {
-  //   path: "/clients/:id",
-  //   component: () => import("components/ClientDetail.vue"),
-  //   props: true
-  // },
-  {
-    path: "/expense/:id",
-    component: () => import("pages/ExpenseDetails.vue"),
-    name: "ExpenseDetails"
-  },
-  {
-    path: "/tax-report",
-    component: () => import("pages/TaxReport.vue"),
-    name: "TaxReport"
-  },
-  {
-    path: "/datev-export",
-    component: () => import("pages/DatevExport.vue"),
-    name: "DatevExport",
-    meta: { requiresAuth: true }
-  }
 
 
 ];

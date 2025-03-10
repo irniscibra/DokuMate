@@ -47,6 +47,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/invoice-items/{invoice_id}', [InvoiceItemController::class, 'index']); // Leistungen einer Rechnung abrufen
     Route::delete('/invoice-items/{id}', [InvoiceItemController::class, 'destroy']); // Leistung löschen
 
+    //TODO ROUTEN
+
+    Route::get('/todos', [TodoController::class, 'index']);
+    Route::post('/todos', [TodoController::class, 'store']);
+    Route::put('/todos/{id}/done', [TodoController::class, 'updateStatus']);
+
 
 });
 

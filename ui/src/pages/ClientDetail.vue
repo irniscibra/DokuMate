@@ -1,6 +1,6 @@
 <template>
   <div padding>
-    <q-btn icon="arrow_back" flat label="Zurück" @click="router.push('/clients')" />
+    <q-btn icon="arrow_back" flat label="Zurück" @click="router.push('/admin-dashboard/clients')" />
 
     <q-card class="client-card">
       <q-card-section>
@@ -65,7 +65,7 @@ async function fetchClient() {
 
 // Rechnung ansehen
 function viewInvoice(id) {
-  router.push(`/invoice/${id}`);
+  router.push(`/admin-dashboard/invoice/${id}`);
 }
 
 function formatDate(date) {
