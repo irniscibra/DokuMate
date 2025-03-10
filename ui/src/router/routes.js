@@ -24,14 +24,25 @@ import RegisterPage from 'pages/RegisterPage.vue';
 import LandingPage from 'pages/LandingPage.vue';
 import ProfilePage from 'pages/ProfilePage.vue';
 import AppointmentsPage from 'src/pages/AppointmentsPage.vue';
+import ClientsManagment from 'pages/ClientsManagment.vue';
+import ClientDetail from 'src/pages/ClientDetail.vue';
+import TaxReport from 'src/pages/TaxReport.vue';
+import DatevExport from 'src/pages/DatevExport.vue';
 
 const routes = [
   { path: '/', component: LoginPage, meta: { guestOnly: true } },
   { path: '/register', component: RegisterPage, meta: { guestOnly: true } },
   { path: '/landing', component: LandingPage, meta: { requiresAuth: true } },
   { path: '/profile', component: ProfilePage, meta: { requiresAuth: true } },
-  {path : '/appointments',component: AppointmentsPage, meta: { requiresAuth: true } },
-  {path:'/admin-dashboard', component: () => import('src/pages/AdminDashboard.vue'), meta: { requiresAuth: true } },
+  { path: '/appointments', component: AppointmentsPage, meta: { requiresAuth: true } },
+  { path: '/admin-dashboard', component: () => import('src/pages/AdminDashboard2.vue'), meta: { requiresAuth: true },
+children: [
+  { path: "clients", component: ClientsManagment },
+  { path: "clients/:id", component: ClientDetail, props: true },
+  { path: "tax-report", component: TaxReport },
+  { path: "datev-export", component: DatevExport }
+]
+},
   {
     path: '/appointments/new',
     component: () => import('pages/NewAppointmentPage.vue'),
@@ -48,11 +59,31 @@ const routes = [
     component: () => import("components/InvoiceDetail.vue"),
     props: true
   },
+  // 👥 Kundenverwaltung
+  // { path: "/clients", component: ClientsManagment, meta: { requiresAuth: true } },
+  // { path: "/clients/:id", component: ClientDetail, props: true, meta: { requiresAuth: true } },
+  // {
+  //   path: "/clients/:id",
+  //   component: () => import("components/ClientDetail.vue"),
+  //   props: true
+  // },
   {
-    path:"/clients/:id",
-    component: () => import("components/ClientDetail.vue"),
-    props: true
+    path: "/expense/:id",
+    component: () => import("pages/ExpenseDetails.vue"),
+    name: "ExpenseDetails"
+  },
+  {
+    path: "/tax-report",
+    component: () => import("pages/TaxReport.vue"),
+    name: "TaxReport"
+  },
+  {
+    path: "/datev-export",
+    component: () => import("pages/DatevExport.vue"),
+    name: "DatevExport",
+    meta: { requiresAuth: true }
   }
+
 
 ];
 

@@ -37,10 +37,10 @@ import { api } from "boot/axios";
 import { useQuasar } from "quasar";
 
 const $q = useQuasar();
-const emit = defineEmits(["expenseSaved", "close"]);
+const emit = defineEmits(["expenseSaved", "update:modelValue"]);
 const props = defineProps({ modelValue: Boolean, expense: Object });
 
-const dialogVisible = ref(props.modelValue);
+const dialogVisible = ref(false);
 const isEditing = ref(false);
 const expenseData = ref({
   amount: "",
@@ -51,28 +51,36 @@ const expenseData = ref({
   attachment: null,
 });
 
-// 📌 Kategorien für Dropdown
 const categoryOptions = [
   "Miete", "Löhne", "Leasing", "Software", "Büromaterial", "Reisekosten", "Sonstiges"
 ];
 
-// 📌 Wenn eine Ausgabe zum Bearbeiten übergeben wird
-watch(() => props.expense, (newVal) => {
-  if (newVal) {
+// 📌 Synchronisiert `dialogVisible` mit `modelValue`
+watch(() => props.modelValue, (newVal) => {
+  dialogVisible.value = newVal;
+
+  if (!newVal) return; // Falls geschlossen, beende hier
+  
+  // Falls eine Ausgabe bearbeitet wird
+  if (props.expense) {
     isEditing.value = true;
-    expenseData.value = { ...newVal };
+    expenseData.value = { ...props.expense };
   } else {
     isEditing.value = false;
-    expenseData.value = { amount: "", category: "", description: "", date: "", recurring: false, attachment: null };
+    resetExpenseData();
   }
-}, { deep: true, immediate: true });
+});
 
-// 📌 Ausgabe speichern
+// 📌 Zurücksetzen der Daten beim Schließen
+function resetExpenseData() {
+  expenseData.value = { amount: "", category: "", description: "", date: "", recurring: false, attachment: null };
+}
+
 async function saveExpense() {
   try {
     const formData = new FormData();
     Object.keys(expenseData.value).forEach(key => {
-      formData.append(key, expenseData.value[key]);
+      formData.append(key, key === "recurring" ? (expenseData.value[key] ? 1 : 0) : expenseData.value[key]);
     });
 
     const response = isEditing.value
@@ -87,9 +95,10 @@ async function saveExpense() {
   }
 }
 
-// 📌 Dialog schließen
+// 📌 Dialog sauber schließen
 function closeDialog() {
   dialogVisible.value = false;
-  emit("close");
+  emit("update:modelValue", false);
+  resetExpenseData();
 }
 </script>

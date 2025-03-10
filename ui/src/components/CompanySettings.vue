@@ -6,7 +6,7 @@
       <q-tab name="details" label="Firmeninformationen" />
       <q-tab name="edit" label="Bearbeiten" />
       <q-tab name="invoices" label="Rechnungen" />
-      <q-tab name="reports" label="Steuerreport" />
+      <!-- <q-tab name="reports" label="Steuerreport" /> -->
     </q-tabs>
 
     <q-tab-panels v-model="selectedTab" animated>
@@ -113,7 +113,7 @@
 
   <q-separator />
 
-  <q-card-section class="report-content">
+  <!-- <q-card-section class="report-content">
     <div class="report-grid">
       <q-card flat bordered class="report-item">
         <q-card-section>
@@ -150,7 +150,47 @@
         </q-card-section>
       </q-card>
     </div>
-  </q-card-section>
+  </q-card-section> -->
+
+  <q-card-section class="report-content">
+  <div class="report-grid">
+    <q-card flat bordered class="report-item">
+      <q-card-section>
+        <p class="label">📈 Einnahmen</p>
+        <p class="value text-green">{{ financeData.total_revenue }} €</p>
+      </q-card-section>
+    </q-card>
+
+    <q-card flat bordered class="report-item">
+      <q-card-section>
+        <p class="label">💰 Bezahlt</p>
+        <p class="value text-blue">{{ financeData.total_paid }} €</p>
+      </q-card-section>
+    </q-card>
+
+    <q-card flat bordered class="report-item">
+      <q-card-section>
+        <p class="label">📉 Ausgaben</p>
+        <p class="value text-orange">{{ financeData.total_expenses }} €</p>
+      </q-card-section>
+    </q-card>
+
+    <q-card flat bordered class="report-item highlight">
+      <q-card-section>
+        <p class="label">🏦 Gewinn vor Steuern</p>
+        <p class="value text-bold">{{ financeData.profit_before_tax }} €</p>
+      </q-card-section>
+    </q-card>
+
+    <q-card flat bordered class="report-item highlight">
+      <q-card-section>
+        <p class="label">📉 Gewinn nach Steuern</p>
+        <p class="value text-bold">{{ financeData.profit_after_tax }} €</p>
+      </q-card-section>
+    </q-card>
+  </div>
+</q-card-section>
+
 
   <q-separator />
 
@@ -183,6 +223,7 @@ const invoices = ref([]);
 const invoiceDialogVisible = ref(false);
 const selectedMonth = ref(new Date().getMonth() + 1);
 const selectedYear = ref(new Date().getFullYear());
+const financeData = ref({});
 
 const settings = ref({
   company_name: "",
@@ -320,6 +361,25 @@ async function fetchTaxReport() {
   }
 }
 
+const selectedFrom = ref(new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split("T")[0]);
+const selectedTo = ref(new Date().toISOString().split("T")[0]);
+
+async function fetchFinanceReport() {
+  try {
+    const response = await api.get("/reports/finance", {
+      params: { from: selectedFrom.value, to: selectedTo.value }
+    });
+    financeData.value = response.data;
+  } catch (error) {
+    console.error("Fehler beim Laden des Finanzberichts:", error);
+    $q.notify({ type: "negative", message: "Fehler beim Laden des Finanzberichts!" });
+  }
+}
+
+onMounted(() => {
+  fetchFinanceReport();
+});
+
 watch(selectedPeriod, async () => {
   console.log("Neuer Zeitraum:", selectedPeriod.value); 
   await fetchTaxReport();
@@ -334,7 +394,7 @@ async function downloadPDF() {
   document.body.appendChild(link);
   link.click();
 }
-onMounted(fetchTaxReport)
+// onMounted(fetchTaxReport)
 onMounted(fetchSettings);
 onMounted(fetchInvoices);
 </script>

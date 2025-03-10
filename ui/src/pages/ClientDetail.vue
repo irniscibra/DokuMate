@@ -1,6 +1,6 @@
 <template>
   <div padding>
-    <q-btn icon="arrow_back" flat label="Zurück" @click="router.go(-1)" />
+    <q-btn icon="arrow_back" flat label="Zurück" @click="router.push('/clients')" />
 
     <q-card class="client-card">
       <q-card-section>

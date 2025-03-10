@@ -68,8 +68,14 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     //rechnung pdf generierung
     Route::get('/invoices/{id}/pdf', [InvoiceController::class, 'generatePDF']);
 
-    //steuerreport
+    //steuerreport (nur einahme)
     Route::get('/reports/tax', [TaxReportController::class, 'getTaxReport']);
+    //steuerreport (einahme und ausgaben)
+    Route::get('/reports/finance', [TaxReportController::class, 'getFinanceReport']);
+    //datev export
+    Route::get('/reports/datev', [TaxReportController::class, 'getDatevReport']);
+    Route::get('/reports/datev/csv', [TaxReportController::class, 'exportDatevCsv']);
+
 
     Route::get('/clients', [ClientController::class, 'index']); // Alle Clients abrufen
     Route::post('/clients', [ClientController::class, 'store']); // Neuen Client speichern

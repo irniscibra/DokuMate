@@ -18,6 +18,9 @@ class Expense extends Model
         'recurring',
         'attachment',
     ];
+    protected $casts = [
+        'recurring' => 'boolean',
+    ];
 
     /**
      * Beziehung zur Firma
@@ -26,4 +29,9 @@ class Expense extends Model
     {
         return $this->belongsTo(Company::class);
     }
+
+    public function getAttachmentUrlAttribute()
+{
+    return $this->attachment ? asset('storage/' . $this->attachment) : null;
+}
 }

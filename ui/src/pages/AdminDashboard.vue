@@ -4,7 +4,7 @@
       <q-toolbar>
         <q-btn flat dense round icon="menu" @click="drawer = !drawer" />
         <q-toolbar-title>Admin-Dashboard</q-toolbar-title>
-        <q-btn flat icon="logout" label="Adminpanel verlassen" @click="router.push('/landing')"/>
+        <q-btn flat icon="logout" label="Adminpanel verlassen" @click="router.push('/landing')" />
       </q-toolbar>
     </q-header>
 
@@ -26,11 +26,11 @@
         </q-item>
 
         <q-item clickable v-ripple @click="selectedTab = 'expenses'">
-  <q-item-section avatar>
-    <q-icon name="payments" />
-  </q-item-section>
-  <q-item-section>Ausgaben</q-item-section>
-</q-item>
+          <q-item-section avatar>
+            <q-icon name="payments" />
+          </q-item-section>
+          <q-item-section>Ausgaben</q-item-section>
+        </q-item>
 
 
         <q-item clickable v-ripple @click="selectedTab = 'clients'">
@@ -38,6 +38,20 @@
             <q-icon name="person" />
           </q-item-section>
           <q-item-section>Kunden</q-item-section>
+        </q-item>
+
+        <q-item clickable v-ripple @click="selectedTab = 'tax-report'">
+          <q-item-section avatar>
+            <q-icon name="assessment" />
+          </q-item-section>
+          <q-item-section>Steuer-Report</q-item-section>
+        </q-item>
+
+        <q-item clickable v-ripple @click="selectedTab = 'datev-export'">
+          <q-item-section avatar>
+            <q-icon name="assessment" />
+          </q-item-section>
+          <q-item-section>Datev Export</q-item-section>
         </q-item>
       </q-list>
     </q-drawer>
@@ -54,9 +68,11 @@
 import { ref, computed } from "vue";
 import MitarbeiterVerwaltung from "components/MitarbeiterVerwaltung.vue";
 import CompanySettings from "components/CompanySettings.vue";
-import ClientsManagment from "components/ClientsManagment.vue";
+import ClientsManagment from "src/pages/ClientsManagment.vue";
 import ExpensesList from "components/ExpensesList.vue";
-import {useRouter} from "vue-router";
+import TaxReport from "pages/TaxReport.vue";
+import DatevExport from "./DatevExport.vue";
+import { useRouter } from "vue-router";
 
 const router = useRouter();
 
@@ -69,8 +85,12 @@ const selectedComponent = computed(() => {
       return CompanySettings;
     case "clients":
       return ClientsManagment;
-      case "expenses":
+    case "expenses":
       return ExpensesList;
+    case "tax-report":
+      return TaxReport;
+      case "datev-export":
+      return DatevExport;
     default:
       return MitarbeiterVerwaltung;
   }
